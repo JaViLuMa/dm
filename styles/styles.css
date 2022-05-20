@@ -2,11 +2,8 @@
 
 html,
 body {
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
+  width: 100%;
   font-family: "Montserrat", sans-serif;
-  /* height: 100%; */
 }
 
 th {
@@ -25,6 +22,8 @@ td {
 }
 
 .container {
+  display: flex;
+  justify-content: center;
   border: 2px solid black;
 }
 
