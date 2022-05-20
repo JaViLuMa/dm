@@ -1,20 +1,4 @@
-import { Data } from "./getData.js";
-
-const json = "../data/tags.json";
-class DoSomething extends Data {
-  constructor(file) {
-    super();
-    this.file = file;
-  }
-
-  async init() {
-    await this.getData(this.file);
-  }
-
-  consoleData() {
-    console.log(this.data);
-  }
-
+export class MapTableRows {
   totalSiteSections(sites) {
     let sum = 0;
 
@@ -23,10 +7,10 @@ class DoSomething extends Data {
     return sum;
   }
 
-  append() {
+  mapRows(data) {
     const tableBody = document.getElementById("table-body");
 
-    tableBody.innerHTML = this.data.result
+    tableBody.innerHTML = data.result
       .map(
         (result) =>
           `<tr class="table__row--specific"><td>${
@@ -38,10 +22,3 @@ class DoSomething extends Data {
       .join("");
   }
 }
-
-const data = new DoSomething(json);
-
-data.init().then(() => {
-  data.consoleData();
-  data.append();
-});
