@@ -8,39 +8,109 @@ export class MapTableRows {
   }
 
   addEventOnClickToTableRows(data) {
-    data.result.forEach((row) => {
+    data.forEach((row) => {
       const mainRow = document.getElementById(`main-row-${row.id}`);
 
-      mainRow.addEventListener("click", () => {
-        const hiddenRow = document.getElementById(`hidden-row-${row.id}`);
+      if (mainRow) {
+        mainRow.addEventListener("click", () => {
+          const hiddenRow = document.getElementById(`hidden-row-${row.id}`);
 
-        if (hiddenRow.style.display === "table-row") {
-          hiddenRow.style.display = "none";
-        } else {
-          hiddenRow.style.display = "table-row";
-        }
-      });
+          if (hiddenRow.style.display === "table-row") {
+            hiddenRow.style.display = "none";
+          } else {
+            hiddenRow.style.display = "table-row";
+          }
+        });
+      }
     });
   }
 
-  mapRows(data) {
-    const tableBody = document.getElementById("table-body");
+  pagination(data) {
+    let currentPage = 1;
 
-    tableBody.innerHTML = data.result
+    const numberOfRowsInput = document.getElementById("number-of-rows");
+    let pageSize = numberOfRowsInput.value;
+
+    this.renderTableRows(data, currentPage, pageSize);
+
+    const nextButton = document.getElementById("next-button");
+    const prevButton = document.getElementById("prev-button");
+
+    numberOfRowsInput.addEventListener("change", (e) => {
+      pageSize = e.target.value;
+      this.renderTableRows(data, currentPage, pageSize);
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (currentPage * pageSize < data.result.length) currentPage++;
+      this.renderTableRows(data, currentPage, pageSize);
+    });
+
+    prevButton.addEventListener("click", () => {
+      if (currentPage > 1) currentPage--;
+      this.renderTableRows(data, currentPage, pageSize);
+    });
+  }
+
+  hiddenRowInformation(sites) {
+    return sites
       .map(
-        (result) =>
-          `<tr id="main-row-${result.id}"  class="table__row--specific"><td>${
-            result.name
-          }</td><td>${this.totalSiteSections(result.sites)}</td><td>${
-            result.isDeleted ? "YES" : "NO"
-          }</td></tr><tr id="hidden-row-${
-            result.id
-          }" class="table__row--hidden"><td colspan="3" class="table__data-cell__div"><div style="background-color: red">${
-            result.id
-          }</div></td></tr>`
+        (site) => `
+    <div class="row--hidden__container--item">
+    <table class="item__table">
+    <tbody>
+    ${site.siteSections
+      .map(
+        (section) =>
+          `<tr class="item__row-specific"><td>${section.name}</td><td>${
+            section.isDeleted ? "YES" : "NO"
+          }</td></tr>`
+      )
+      .join("")}
+    </tbody>
+    </table>
+    </div>
+    `
       )
       .join("");
+  }
 
-    this.addEventOnClickToTableRows(data);
+  renderTableRows(data, currentPage, pageSize) {
+    const tableBody = document.getElementById("table-body");
+
+    let rows = "";
+
+    const filterData = data.result.filter((_, index) => {
+      let start = (currentPage - 1) * pageSize;
+      let end = currentPage * pageSize;
+
+      if (index >= start && index < end) {
+        return true;
+      }
+    });
+
+    filterData.forEach((row) => {
+      rows += `
+        <tr id="main-row-${row.id}"  class="table__row--specific"><td>${
+        row.name
+      }</td><td>${this.totalSiteSections(row.sites)}</td><td>${
+        row.isDeleted ? "YES" : "NO"
+      }</td></tr>
+        <tr id="hidden-row-${
+          row.id
+        }" class="table__row--hidden"><td colspan="3" class="table__data-cell__div">
+        <div class="row--hidden__container">
+        ${this.hiddenRowInformation(row.sites)}
+        </div></td></tr>
+      `;
+    });
+
+    tableBody.innerHTML = rows;
+
+    this.addEventOnClickToTableRows(filterData);
+  }
+
+  mapRows(data) {
+    this.pagination(data);
   }
 }

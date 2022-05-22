@@ -24,6 +24,7 @@ td {
 .container {
   display: flex;
   justify-content: center;
+  overflow-x: auto;
 }
 
 .table__row-headers {
@@ -38,7 +39,6 @@ td {
 .table__header--website {
   padding-left: 48px;
   color: #0068ed;
-  min-width: 240px;
   width: 630px;
   background-color: #ced0da;
 }
@@ -56,10 +56,37 @@ td {
   border: 1px solid #f6f7f9;
 }
 
+.table__row--specific:hover {
+  background-color: #eaedf3;
+}
+
 .table__data-cell__div {
   height: 100%;
 }
 
 .table__row--hidden {
   display: none;
+}
+
+.row--hidden__container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: start;
+  background-color: #eaedf3;
+  padding: 24px 56px;
+  gap: 54px;
+}
+
+.row--hidden__container--item {
+  width: 100%;
+}
+
+.item__table {
+  width: 100%;
+}
+
+.item__row-specific {
+  width: 100%;
+  border: 1px solid #f6f7f9;
+  background-color: #ffffff;
 }
