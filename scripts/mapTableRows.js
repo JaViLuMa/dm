@@ -9,16 +9,21 @@ export class MapTableRows {
 
   addEventOnClickToTableRows(data) {
     data.forEach((row) => {
-      const mainRow = document.getElementById(`main-row-${row.id}`);
+      const dataCellRow = document.getElementById(`data-cell-${row.id}`);
 
-      if (mainRow) {
-        mainRow.addEventListener("click", () => {
+      if (dataCellRow) {
+        dataCellRow.addEventListener("click", () => {
           const hiddenRow = document.getElementById(`hidden-row-${row.id}`);
+          const arrowIcon = document.getElementById(`arrow-row-${row.id}`);
 
           if (hiddenRow.style.display === "table-row") {
             hiddenRow.style.display = "none";
+            arrowIcon.classList =
+              "row--specific--icon--arrow icon--arrow--normal";
           } else {
             hiddenRow.style.display = "table-row";
+            arrowIcon.classList =
+              "row--specific--icon--arrow icon--arrow--color";
           }
         });
       }
@@ -30,6 +35,15 @@ export class MapTableRows {
 
     const numberOfRowsInput = document.getElementById("number-of-rows");
     let pageSize = numberOfRowsInput.value;
+
+    const chxHeader = document.getElementById("checkbox-header");
+
+    let isChecked = false;
+
+    chxHeader.addEventListener("click", () => {
+      isChecked = chxHeader.checked;
+      this.renderTableRows(data, currentPage, pageSize, isChecked);
+    });
 
     this.renderTableRows(data, currentPage, pageSize);
 
@@ -52,6 +66,14 @@ export class MapTableRows {
     });
   }
 
+  isOperational(deleted) {
+    if (deleted) {
+      return `<span style="color: #eb5757; margin-right: 4px;">●</span>`;
+    } else {
+      return `<span style="color: #27ae60; margin-right: 4px;">●</span>`;
+    }
+  }
+
   hiddenRowInformation(sites) {
     return sites
       .map(
@@ -62,9 +84,17 @@ export class MapTableRows {
     ${site.siteSections
       .map(
         (section) =>
-          `<tr class="item__row-specific"><td>${section.name}</td><td>${
-            section.isDeleted ? "YES" : "NO"
-          }</td></tr>`
+          `<tr class="item__row-specific">
+          <td class="row--hidden--checkbox">
+          <label>
+          <input type="checkbox" name="chx" />
+          </label>
+          </td>
+          <td>${
+            section.name
+          }</td><td class="row--hidden--operational">${this.isOperational(
+            section.isDeleted
+          )}</td></tr>`
       )
       .join("")}
     </tbody>
@@ -75,7 +105,7 @@ export class MapTableRows {
       .join("");
   }
 
-  renderTableRows(data, currentPage, pageSize) {
+  renderTableRows(data, currentPage, pageSize, isChecked) {
     const tableBody = document.getElementById("table-body");
 
     const filterData = data.result.filter((_, index) => {
@@ -91,20 +121,30 @@ export class MapTableRows {
       .map(
         (row) =>
           `
-        <tr id="main-row-${
+        <tr class="table__row--specific">
+        <td class="checkbox">
+        <label>
+        <input type="checkbox" name="chx" ${isChecked && "checked"} />
+        </label>
+        </td>
+        <td id="data-cell-${row.id}">
+        <img class="row--specific--icon" src="static/images/row-icon.svg" alt="row-icon-${
           row.id
-        }"  class="table__row--specific"><td><img class="row--specific--icon" src="static/images/row-icon.svg" alt="${
+        } icon" />
+        <img id="arrow-row-${
+          row.id
+        }" class="row--specific--icon--arrow" src="static/images/arrow-icon.svg" alt="arrow-icon-${
             row.id
-          } icon" />${
-            row.name
-          }</td><td style="padding-left: 12px">${this.totalSiteSections(
-            row.sites
-          )}</td><td style="padding-left: 12px">${
-            row.isDeleted ? "YES" : "NO"
-          }</td></tr>
+          } icon" />
+          ${row.name}</td>
+        <td style="padding-left: 12px">${this.totalSiteSections(row.sites)}</td>
+        <td style="padding-left: 12px">${this.isOperational(
+          row.isDeleted
+        )}Operational</td>
+        </tr>
         <tr id="hidden-row-${
           row.id
-        }" class="table__row--hidden"><td colspan="3" class="table__data-cell__div">
+        }" class="table__row--hidden"><td colspan="4" class="table__data-cell__div">
         <div class="row--hidden__title"><p>WEBSITE SECTIONS</p></div>
         <div class="row--hidden__container">
         ${this.hiddenRowInformation(row.sites)}

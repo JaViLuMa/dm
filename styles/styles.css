@@ -25,7 +25,6 @@ td img {
 }
 
 .container {
-  /* overflow: auto; */
   width: 1110px;
   margin: 0 auto;
 }
@@ -40,10 +39,9 @@ td img {
 }
 
 .table__header--website {
-  padding-left: 48px;
   color: #0068ed;
   width: 630px;
-  background-color: #ced0da;
+  background-color: #eaedf3;
 }
 
 .table__header--sections,
@@ -52,7 +50,7 @@ td img {
   color: #3e3f42;
   width: 240px;
   max-width: 240px;
-  background-color: #eaedf3;
+  background-color: #f7f7f8;
 }
 
 .table__row--specific {
@@ -89,17 +87,32 @@ td img {
 
 .item__table {
   width: 100%;
+  table-layout: fixed;
 }
 
 .item__row-specific {
   color: #646569;
-  width: 100%;
   border: 1px solid #eaedf3;
   background-color: #ffffff;
 }
 
 .row--specific--icon {
+  margin-right: 16px;
+}
+
+.row--specific--icon--arrow {
   margin-right: 12px;
+}
+
+.icon--arrow--normal {
+  filter: none;
+  transform: rotate(0deg);
+}
+
+.icon--arrow--color {
+  filter: invert(33%) sepia(89%) saturate(4979%) hue-rotate(206deg)
+    brightness(95%) contrast(101%);
+  transform: rotate(90deg);
 }
 
 .row--hidden__title {
@@ -113,4 +126,35 @@ td img {
   padding-top: 2px;
   padding-bottom: 2px;
   font-weight: 600;
+}
+
+.checkbox {
+  padding: 0 16px;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #ced0da;
+  background-color: #ffffff;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #0068ed;
+}
+
+.table__row-header--checkbox {
+  background-color: #eaedf3;
+}
+
+.row--hidden--checkbox {
+  width: 16px;
+  padding: 0 16px;
+}
+
+.row--hidden--operational {
+  text-align: center;
 }
