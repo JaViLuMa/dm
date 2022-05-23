@@ -78,8 +78,6 @@ export class MapTableRows {
   renderTableRows(data, currentPage, pageSize) {
     const tableBody = document.getElementById("table-body");
 
-    let rows = "";
-
     const filterData = data.result.filter((_, index) => {
       let start = (currentPage - 1) * pageSize;
       let end = currentPage * pageSize;
