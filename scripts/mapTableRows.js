@@ -89,23 +89,31 @@ export class MapTableRows {
       }
     });
 
-    filterData.forEach((row) => {
-      rows += `
-        <tr id="main-row-${row.id}"  class="table__row--specific"><td>${
-        row.name
-      }</td><td>${this.totalSiteSections(row.sites)}</td><td>${
-        row.isDeleted ? "YES" : "NO"
-      }</td></tr>
+    tableBody.innerHTML = filterData
+      .map(
+        (row) =>
+          `
+        <tr id="main-row-${
+          row.id
+        }"  class="table__row--specific"><td><img class="row--specific--icon" src="static/images/row-icon.svg" alt="${
+            row.id
+          } icon" />${
+            row.name
+          }</td><td style="padding-left: 12px">${this.totalSiteSections(
+            row.sites
+          )}</td><td style="padding-left: 12px">${
+            row.isDeleted ? "YES" : "NO"
+          }</td></tr>
         <tr id="hidden-row-${
           row.id
         }" class="table__row--hidden"><td colspan="3" class="table__data-cell__div">
+        <div class="row--hidden__title"><p>WEBSITE SECTIONS</p></div>
         <div class="row--hidden__container">
         ${this.hiddenRowInformation(row.sites)}
         </div></td></tr>
-      `;
-    });
-
-    tableBody.innerHTML = rows;
+      `
+      )
+      .join("");
 
     this.addEventOnClickToTableRows(filterData);
   }
