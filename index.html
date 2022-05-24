@@ -14,8 +14,8 @@
     <div id="container" class="container">
       <table id="table">
         <thead id="table-head">
-          <tr class="table__row-headers">
-            <th class="checkbox table__row-header--checkbox">
+          <tr>
+            <th class="checkbox table__header--checkbox">
               <label
                 ><input id="checkbox-header" type="checkbox" name="chx-header"
               /></label>
@@ -27,20 +27,32 @@
         </thead>
         <tbody id="table-body"></tbody>
       </table>
-    </div>
 
-    <div>
-      <button id="prev-button">Previous</button>
-      <label>
-        <select name="Number of rows" id="number-of-rows">
-          <option value="10" selected="selected">10</option>
-          <option value="20">20</option>
-          <option value="30">30</option>
-          <option value="40">40</option>
-          <option value="50">50</option>
-        </select>
-      </label>
-      <button id="next-button">Next</button>
+      <div class="pagination">
+        <p class="pagination__paragraph">Show rows:</p>
+        <label>
+          <select
+            name="Number of rows"
+            id="number-of-rows"
+            class="pagination__select"
+          >
+            <option value="10" selected="selected">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </label>
+        <div class="pagination--divider" style="margin-right: 16px"></div>
+        <p id="amount-of-rows" class="pagination--amount"></p>
+        <button id="prev-button" class="pagination__button--prev">
+          <img src="static/images/prev-icon.svg" alt="Previous Icon" />
+        </button>
+        <div class="pagination--divider" style="margin-right: 12px"></div>
+        <button id="next-button" class="pagination__button--next">
+          <img src="static/images/next-icon.svg" alt="Previous Icon" />
+        </button>
+      </div>
     </div>
   </body>
 </html>

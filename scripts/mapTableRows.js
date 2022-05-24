@@ -1,4 +1,10 @@
+import { HTMLFormat } from "./htmlFormat.js";
+
 export class MapTableRows {
+  constructor() {
+    this.HTMLFormat = new HTMLFormat();
+  }
+
   totalSiteSections(sites) {
     let sum = 0;
 
@@ -14,16 +20,14 @@ export class MapTableRows {
       if (dataCellRow) {
         dataCellRow.addEventListener("click", () => {
           const hiddenRow = document.getElementById(`hidden-row-${row.id}`);
-          const arrowIcon = document.getElementById(`arrow-row-${row.id}`);
+          const arrowIcon = document.getElementById(`arrow-icon-${row.id}`);
 
           if (hiddenRow.style.display === "table-row") {
             hiddenRow.style.display = "none";
-            arrowIcon.classList =
-              "row--specific--icon--arrow icon--arrow--normal";
+            arrowIcon.classList = "website__icon--arrow icon--arrow--normal";
           } else {
             hiddenRow.style.display = "table-row";
-            arrowIcon.classList =
-              "row--specific--icon--arrow icon--arrow--color";
+            arrowIcon.classList = "website__icon--arrow icon--arrow--color";
           }
         });
       }
@@ -66,6 +70,22 @@ export class MapTableRows {
     });
   }
 
+  tooltip(deleted, html) {
+    if (deleted) {
+      return html`<span
+        style="color: #eb5757; margin-right: 16px;"
+        class="tooltip"
+        >●<span class="tooltip--text">Not Operational</span></span
+      >`;
+    } else {
+      return html`<span
+        style="color: #27ae60; margin-right: 16px;"
+        class="tooltip"
+        >●<span class="tooltip--text">Operational</span></span
+      >`;
+    }
+  }
+
   isOperational(deleted) {
     if (deleted) {
       return `<span style="color: #eb5757; margin-right: 4px;">●</span>`;
@@ -74,38 +94,43 @@ export class MapTableRows {
     }
   }
 
-  hiddenRowInformation(sites) {
-    return sites
+  hiddenRowInformation(sites, html) {
+    return `${sites
       .map(
-        (site) => `
-    <div class="row--hidden__container--item">
-    <table class="item__table">
-    <tbody>
-    ${site.siteSections
-      .map(
-        (section) =>
-          `<tr class="item__row-specific">
-          <td class="row--hidden--checkbox">
-          <label>
-          <input type="checkbox" name="chx" />
-          </label>
-          </td>
-          <td>${
-            section.name
-          }</td><td class="row--hidden--operational">${this.isOperational(
-            section.isDeleted
-          )}</td></tr>`
+        (site) => html`
+          <div class="container--item">
+            <table class="item__table--hidden">
+              <tbody>
+                ${site.siteSections.map(
+                  (section) =>
+                    html`<tr class="table--hidden__row">
+                      <td class="checkbox hidden__row__checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            name="chx-${section.id}-hidden"
+                          />
+                        </label>
+                      </td>
+                      <td class="hidden__row--section">${section.name}</td>
+                      <td class="hidden__row--operational">
+                        ${this.tooltip(section.isDeleted, html)}<img
+                          src="static/images/more-icon.svg"
+                          alt="more-icon-${section.id} icon"
+                        />
+                      </td>
+                    </tr>`
+                )}
+              </tbody>
+            </table>
+          </div>
+        `
       )
-      .join("")}
-    </tbody>
-    </table>
-    </div>
-    `
-      )
-      .join("");
+      .join("")}`;
   }
 
   renderTableRows(data, currentPage, pageSize, isChecked) {
+    const html = this.HTMLFormat.html;
     const tableBody = document.getElementById("table-body");
 
     const filterData = data.result.filter((_, index) => {
@@ -117,41 +142,61 @@ export class MapTableRows {
       }
     });
 
-    tableBody.innerHTML = filterData
+    const amountOfRows = document.getElementById("amount-of-rows");
+
+    let from = pageSize * currentPage - pageSize + 1;
+    let to =
+      pageSize * currentPage > data.result.length
+        ? data.result.length
+        : pageSize * currentPage;
+
+    amountOfRows.innerHTML = `${from} - ${to} of ${data.result.length}`;
+
+    tableBody.innerHTML = `
+    ${filterData
       .map(
-        (row) =>
-          `
-        <tr class="table__row--specific">
-        <td class="checkbox">
-        <label>
-        <input type="checkbox" name="chx" ${isChecked && "checked"} />
-        </label>
-        </td>
-        <td id="data-cell-${row.id}">
-        <img class="row--specific--icon" src="static/images/row-icon.svg" alt="row-icon-${
-          row.id
-        } icon" />
-        <img id="arrow-row-${
-          row.id
-        }" class="row--specific--icon--arrow" src="static/images/arrow-icon.svg" alt="arrow-icon-${
-            row.id
-          } icon" />
-          ${row.name}</td>
-        <td style="padding-left: 12px">${this.totalSiteSections(row.sites)}</td>
-        <td style="padding-left: 12px">${this.isOperational(
-          row.isDeleted
-        )}Operational</td>
-        </tr>
-        <tr id="hidden-row-${
-          row.id
-        }" class="table__row--hidden"><td colspan="4" class="table__data-cell__div">
-        <div class="row--hidden__title"><p>WEBSITE SECTIONS</p></div>
-        <div class="row--hidden__container">
-        ${this.hiddenRowInformation(row.sites)}
-        </div></td></tr>
-      `
+        (row) => html`
+          <tr class="table__body__row">
+            <td class="checkbox" class="row__checkbox">
+              <label>
+                <input
+                  type="checkbox"
+                  name="chx-${row.id}"
+                  ${isChecked ? "checked" : ""}
+                />
+              </label>
+            </td>
+            <td id="data-cell-${row.id}" class="row--website">
+              <img
+                class="website__icon"
+                src="static/images/row-icon.svg"
+                alt="row-icon-${row.id} icon"
+              />
+              <img
+                id="arrow-icon-${row.id}"
+                class="website__icon--arrow"
+                src="static/images/arrow-icon.svg"
+                alt="arrow-icon-${row.id} icon"
+              />
+              ${row.name}
+            </td>
+            <td class="row--sections">${this.totalSiteSections(row.sites)}</td>
+            <td class="row--status">
+              ${this.isOperational(row.isDeleted)}Operational
+            </td>
+          </tr>
+          <tr id="hidden-row-${row.id}" class="row--hidden">
+            <td colspan="4">
+              <div class="row--hidden__title"><p>WEBSITE SECTIONS</p></div>
+              <div class="row--hidden__container">
+                ${this.hiddenRowInformation(row.sites, html)}
+              </div>
+            </td>
+          </tr>
+        `
       )
-      .join("");
+      .join("")}
+    `;
 
     this.addEventOnClickToTableRows(filterData);
   }
