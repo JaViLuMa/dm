@@ -129,6 +129,33 @@ export class MapTableRows {
       .join("")}`;
   }
 
+  // sortByTableColumn(table, column, asc = true) {
+  //   const direction = asc ? 1 : -1;
+  //   const tableBody = table.tBodies[0];
+
+  //   const rows = tableBody.querySelectorAll("[data-row-to-sort]");
+  //   const rowsArray = Array.from(rows);
+
+  //   const sortedRows = rowsArray.sort((a, b) => {
+  //     const aColumnText = a
+  //       .querySelector(`td:nth-child(${column + 1})`)
+  //       .textContent.trim()
+  //       .toLowerCase();
+  //     const bColumnText = b
+  //       .querySelector(`td:nth-child(${column + 1})`)
+  //       .textContent.trim()
+  //       .toLowerCase();
+
+  //     return aColumnText > bColumnText ? direction : -direction;
+  //   });
+
+  //   while (tableBody.firstChild) {
+  //     tableBody.removeChild(tableBody.firstChild);
+  //   }
+
+  //   tableBody.append(...sortedRows);
+  // }
+
   renderTableRows(data, currentPage, pageSize, isChecked) {
     const html = this.HTMLFormat.html;
     const tableBody = document.getElementById("table-body");
@@ -156,7 +183,7 @@ export class MapTableRows {
     ${filterData
       .map(
         (row) => html`
-          <tr class="table__body__row">
+          <tr class="table__body__row" data-row-to-sort>
             <td class="checkbox" class="row__checkbox">
               <label for="chx-${row.id}" class="visually-hidden"
                 >Checkbox ${row.id}</label
@@ -202,6 +229,8 @@ export class MapTableRows {
       )
       .join("")}
     `;
+
+    // this.sortByTableColumn(document.getElementById("table"), 1, false);
 
     this.addEventOnClickToTableRows(filterData);
   }
