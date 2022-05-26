@@ -158,25 +158,30 @@ export class MapTableRows {
         (row) => html`
           <tr class="table__body__row">
             <td class="checkbox" class="row__checkbox">
-              <label>
-                <input
-                  type="checkbox"
-                  name="chx-${row.id}"
-                  ${isChecked ? "checked" : ""}
-                />
-              </label>
+              <label for="chx-${row.id}" class="visually-hidden"
+                >Checkbox ${row.id}</label
+              >
+              <input
+                id="chx-${row.id}"
+                type="checkbox"
+                ${isChecked ? "checked" : ""}
+              />
             </td>
             <td id="data-cell-${row.id}" class="row--website">
               <img
                 class="website__icon"
                 src="static/images/row-icon.svg"
                 alt="row-icon-${row.id} icon"
+                width="16px"
+                height="16px"
               />
               <img
                 id="arrow-icon-${row.id}"
                 class="website__icon--arrow"
                 src="static/images/arrow-icon.svg"
                 alt="arrow-icon-${row.id} icon"
+                width="6px"
+                height="8px"
               />
               ${row.name}
             </td>
